@@ -42,10 +42,6 @@ type LogMessage struct {
 	Number3 int
 	AdditionalInfo string
 	TextMessage string
-}
-
-type TimeStampedLogMessage struct {
-	LogMessage
 	Timestamp time.Time
 }
 
@@ -77,7 +73,7 @@ type StringWriter interface {
 }
 
 type StringMessageBuilder interface {
-	MessageToString(message TimeStampedLogMessage) (string, error)
+	MessageToString(message LogMessage) (string, error)
 }
 
 type TimeProvider interface {
