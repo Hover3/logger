@@ -80,3 +80,7 @@ type StringMessageBuilder interface {
 	MessageToString(message TimeStampedLogMessage) (string, error)
 }
 
+type TimeProvider interface {
+	GetCurrentTime() time.Time
+}
+
