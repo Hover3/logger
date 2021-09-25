@@ -1,6 +1,9 @@
 package logger
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type ActualTimeProvider struct {
 
@@ -24,23 +27,24 @@ func (C CSVStringBuilder) MessageToString(message LogMessage) (string, error) {
 
 
 type StdTimeFormatter struct {
-	DateComponentSeparator string
-	DateTimeSeparator string
-	TimeComponentSeparator string
+	format string
 }
 
+func NewStdTimeFormatter(
+		dateComponentSeparator string,
+		dateTimeSeparator string,
+		timeComponentSeparator string,
+	) *StdTimeFormatter {
+
+	return &StdTimeFormatter{
+			format: fmt.Sprintf("02%s01%s2006%s15%s04%s05", dateComponentSeparator, dateComponentSeparator,
+				dateTimeSeparator,
+				timeComponentSeparator, timeComponentSeparator),
+		}
+}
 func (stf *StdTimeFormatter) FormatTime(t time.Time) string {
-	var tmpStr string
-	y, m, d:=t.Date()
-	h, min, s:=t.Clock()
-	tmpStr = string(d) + stf.DateComponentSeparator +
-			string(m) + stf.DateComponentSeparator +
-			string(y) +stf.DateComponentSeparator +
-			stf.DateTimeSeparator +
-			string(h) +stf.TimeComponentSeparator +
-			string(min) +stf.TimeComponentSeparator +
-			string(s)
-	return tmpStr
+
+	return t.Format(stf.format)
 }
 
 
