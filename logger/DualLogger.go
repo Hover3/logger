@@ -2,11 +2,41 @@ package logger
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
 type DualLogger struct {
+	consoleLogLevel EventLevel
+	consoleLevelMutex sync.RWMutex
+	consoleWriteMutex sync.Mutex
 
+	cSVLogLevel EventLevel
+	cSVLevelMutex sync.RWMutex
+	cSVWriteMutex sync.Mutex
+}
+func (d *DualLogger) SetConsoleLogLevel( level EventLevel) {
+	d.consoleLevelMutex.Lock()
+	defer d.consoleLevelMutex.Unlock()
+	d.consoleLogLevel=level
+}
+
+func (d *DualLogger)  GetConsoleLogLevel() EventLevel {
+	d.consoleLevelMutex.RLock()
+	defer d.consoleLevelMutex.RUnlock()
+	return d.consoleLogLevel
+}
+
+func (d *DualLogger) SetCSVLogLevel (level EventLevel) {
+	d.cSVLevelMutex.Lock()
+	defer d.cSVLevelMutex.Unlock()
+	d.cSVLogLevel=level
+}
+
+func (d *DualLogger) GetCSVLogLevel() EventLevel {
+	d.cSVLevelMutex.RLock()
+	defer d.cSVLevelMutex.RUnlock()
+	return d.cSVLogLevel
 }
 
 func (d *DualLogger) Log(message LogMessage) {
