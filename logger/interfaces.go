@@ -68,7 +68,7 @@ type LegacyLogger interface {
 }
 
 type StringWriter interface {
-	Write(string) error
+	
 	WriteLn(string) error
 }
 
