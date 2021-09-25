@@ -71,4 +71,12 @@ type LegacyLogger interface {
 	Fatalf(message string, a ...interface{})
 }
 
+type StringWriter interface {
+	Write(string) error
+	WriteLn(string) error
+}
+
+type StringMessageBuilder interface {
+	MessageToString(message TimeStampedLogMessage) (string, error)
+}
 
