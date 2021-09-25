@@ -19,11 +19,33 @@ type  CSVStringBuilder struct {
 }
 
 
-func (C CSVStringBuilder) MessageToString(message LogMessage) (string, error) {
+func (C *CSVStringBuilder) MessageToString(message LogMessage) (string, error) {
 	var tmpStr string
 
 
 }
+
+func GetEventLevelChar (l EventLevel) string {
+	switch l {
+	case LOGGER_EVENT:
+		return "L"
+	case Event_FATAL:
+		return "F"
+	case Event_ERROR:
+		return "E"
+	case Event_WARNING:
+		return "W"
+	case Event_INFO:
+		return "I"
+	case Event_DEBUG:
+		return "D"
+	case Event_TRACE:
+		return "T"
+	default:
+		return "U"
+	}
+}
+
 
 
 type StdTimeFormatter struct {
