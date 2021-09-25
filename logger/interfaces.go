@@ -84,3 +84,7 @@ type TimeProvider interface {
 	GetCurrentTime() time.Time
 }
 
+type TimeFormatter interface {
+	FormatTime(t time.Time) string
+}
+
