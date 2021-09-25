@@ -73,7 +73,7 @@ type StringWriter interface {
 }
 
 type StringMessageBuilder interface {
-	MessageToString(message LogMessage) (string, error)
+	MessageToString(message *LogMessage) (string, error)
 }
 
 type TimeProvider interface {

@@ -18,7 +18,7 @@ type CSVStringBuilder struct {
 	TimeFormatter
 }
 
-func (csb *CSVStringBuilder) MessageToString(message LogMessage) (string, error) {
+func (csb *CSVStringBuilder) MessageToString(message *LogMessage) (string, error) {
 	tmpStr:= fmt.Sprint(GetEventLevelChar(message.EventLevel), csb.ColumnSeparator,
 			csb.TimeFormatter.FormatTime(message.Timestamp), csb.ColumnSeparator,
 			message.ServiceType, csb.ColumnSeparator,

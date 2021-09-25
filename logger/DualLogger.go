@@ -11,12 +11,35 @@ type DualLogger struct {
 	consoleLogLevel EventLevel
 	consoleLevelMutex sync.RWMutex
 	consoleWriteMutex sync.Mutex
+	consoleStringBuilder StringMessageBuilder
 
 	csvLogLevel   EventLevel
 	csvLevelMutex sync.RWMutex
 	csvWriteMutex sync.Mutex
 	csvWriter     StringWriter
+	csvStringBuilder StringMessageBuilder
+
+	timeSource TimeProvider
 }
+
+func NewDualLogger (consoleLogLevel EventLevel,
+					consoleStringBuilder StringMessageBuilder,
+					csvLogLevel EventLevel,
+					csvWriter StringWriter,
+					csvStringBuilder StringMessageBuilder,
+					timeSource TimeProvider,
+	) *DualLogger {
+
+	return &DualLogger{
+		consoleLogLevel:      consoleLogLevel,
+		consoleStringBuilder: consoleStringBuilder,
+		csvLogLevel:          csvLogLevel,
+		csvWriter:            csvWriter,
+		csvStringBuilder:     csvStringBuilder,
+		timeSource: timeSource,
+	}
+}
+
 func (d *DualLogger) SetConsoleLogLevel( level EventLevel) {
 	d.consoleLevelMutex.Lock()
 	defer d.consoleLevelMutex.Unlock()
@@ -41,13 +64,41 @@ func (d *DualLogger) GetCSVLogLevel() EventLevel {
 	return d.csvLogLevel
 }
 
-func (d *DualLogger) Log(message LogMessage) {
-	panic("implement me")
+func (d *DualLogger) Log(message *LogMessage) {
+	message.Timestamp=d.timeSource.GetCurrentTime()
+	//TODO review
+
+
+	//printing to screen
+
+	if message.EventLevel<=d.consoleLogLevel {
+		d.writeToConsole(message)
+	}
+
+	//Writing to file
+	if message.EventLevel<=d.csvLogLevel {
+		d.writeToCSV(message)
+	}
+
+}
+func (d *DualLogger) writeToConsole(message *LogMessage) {
+	d.consoleWriteMutex.Lock()
+	defer d.consoleWriteMutex.Unlock()
+	if d.consoleStringBuilder==nil {
+		fmt.Println("Logger: Console string builder is not set!")
+		return
+	}
+	fmt.Println(d.consoleStringBuilder.MessageToString(message))
+}
+func (d *DualLogger) writeToCSV(message *LogMessage) {
+
 }
 
-func (d *DualLogger) LogRuntime(message LogMessage, skip int) {
+
+func (d *DualLogger) LogRuntime(message *LogMessage, skip int) {
 	fn, line:=GetRuntimeInfo(skip)
 	message.TextMessage=fmt.Sprintf("%s %s %s", fn, strconv.Itoa(line), message.TextMessage)
+	d.Log(message)
 }
 
 func (d *DualLogger) Debug(message string) {
@@ -62,7 +113,7 @@ func (d *DualLogger) Debug(message string) {
 		TextMessage:    message,
 		Timestamp:      time.Time{},
 	}
-	d.LogRuntime(m, 2)
+	d.LogRuntime(&m, 2)
 }
 
 func (d *DualLogger) Debugf(message string, a ...interface{}) {
@@ -77,7 +128,7 @@ func (d *DualLogger) Debugf(message string, a ...interface{}) {
 		TextMessage:    fmt.Sprintf(message, a...),
 		Timestamp:      time.Time{},
 	}
-	d.LogRuntime(m, 2)
+	d.LogRuntime(&m, 2)
 }
 
 func (d *DualLogger) Info(message string) {
@@ -92,7 +143,7 @@ func (d *DualLogger) Info(message string) {
 		TextMessage:    message,
 		Timestamp:      time.Time{},
 	}
-	d.LogRuntime(m, 2)
+	d.LogRuntime(&m, 2)
 }
 
 func (d *DualLogger) Infof(message string, a ...interface{}) {
@@ -107,7 +158,7 @@ func (d *DualLogger) Infof(message string, a ...interface{}) {
 		TextMessage:    fmt.Sprintf(message, a...),
 		Timestamp:      time.Time{},
 	}
-	d.LogRuntime(m, 2)
+	d.LogRuntime(&m, 2)
 }
 
 func (d *DualLogger) Warning(message string) {
@@ -122,7 +173,7 @@ func (d *DualLogger) Warning(message string) {
 		TextMessage:    message,
 		Timestamp:      time.Time{},
 	}
-	d.LogRuntime(m, 2)
+	d.LogRuntime(&m, 2)
 }
 
 func (d *DualLogger) Warningf(message string, a ...interface{}) {
@@ -137,7 +188,7 @@ func (d *DualLogger) Warningf(message string, a ...interface{}) {
 		TextMessage:    fmt.Sprintf(message, a...),
 		Timestamp:      time.Time{},
 	}
-	d.LogRuntime(m, 2)
+	d.LogRuntime(&m, 2)
 }
 
 func (d *DualLogger) Error(message string) {
@@ -152,7 +203,7 @@ func (d *DualLogger) Error(message string) {
 		TextMessage:    message,
 		Timestamp:      time.Time{},
 	}
-	d.LogRuntime(m, 2)
+	d.LogRuntime(&m, 2)
 }
 
 func (d *DualLogger) Errorf(message string, a ...interface{}) {
@@ -167,7 +218,7 @@ func (d *DualLogger) Errorf(message string, a ...interface{}) {
 		TextMessage:    fmt.Sprintf(message, a...),
 		Timestamp:      time.Time{},
 	}
-	d.LogRuntime(m, 2)
+	d.LogRuntime(&m, 2)
 }
 
 func (d *DualLogger) Fatal(message string) {
@@ -182,7 +233,7 @@ func (d *DualLogger) Fatal(message string) {
 		TextMessage:    message,
 		Timestamp:      time.Time{},
 	}
-	d.LogRuntime(m, 2)
+	d.LogRuntime(&m, 2)
 }
 
 func (d *DualLogger) Fatalf(message string, a ...interface{}) {
@@ -197,6 +248,6 @@ func (d *DualLogger) Fatalf(message string, a ...interface{}) {
 		TextMessage:    fmt.Sprintf(message, a...),
 		Timestamp:      time.Time{},
 	}
-	d.LogRuntime(m, 2)
+	d.LogRuntime(&m, 2)
 }
 
