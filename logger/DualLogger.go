@@ -88,7 +88,8 @@ func (d *DualLogger) writeToConsole(message *LogMessage) {
 		fmt.Println("Logger: Console string builder is not set!")
 		return
 	}
-	fmt.Println(d.consoleStringBuilder.MessageToString(message))
+	msg, _:=d.consoleStringBuilder.MessageToString(message)
+	fmt.Println(msg)
 }
 func (d *DualLogger) writeToCSV(message *LogMessage) {
 
