@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -44,7 +45,8 @@ func (d *DualLogger) Log(message LogMessage) {
 }
 
 func (d *DualLogger) LogRuntime(message LogMessage, skip int) {
-	panic("implement me")
+	fn, line:=GetRuntimeInfo(skip)
+	message.TextMessage=fmt.Sprintf("%s %s %s", fn, strconv.Itoa(line), message.TextMessage)
 }
 
 func (d *DualLogger) Debug(message string) {
@@ -63,7 +65,6 @@ func (d *DualLogger) Debug(message string) {
 }
 
 func (d *DualLogger) Debugf(message string, a ...interface{}) {
-	//panic("implement me")
 	m:=LogMessage{
 		EventLevel:     Event_DEBUG,
 		ServiceType:    0,

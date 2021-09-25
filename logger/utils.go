@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"runtime"
 	"time"
 )
 
@@ -69,6 +70,12 @@ func NewStdTimeFormatter(
 			timeComponentSeparator, timeComponentSeparator),
 	}
 }
+
 func (stf *StdTimeFormatter) FormatTime(t time.Time) string {
 	return t.Format(stf.format)
+}
+
+func GetRuntimeInfo(skip int) (string, int) {
+	_, fn, line, _ := runtime.Caller(skip+1)
+	return fn, line
 }
