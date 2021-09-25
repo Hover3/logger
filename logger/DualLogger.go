@@ -12,9 +12,10 @@ type DualLogger struct {
 	consoleLevelMutex sync.RWMutex
 	consoleWriteMutex sync.Mutex
 
-	cSVLogLevel EventLevel
-	cSVLevelMutex sync.RWMutex
-	cSVWriteMutex sync.Mutex
+	csvLogLevel   EventLevel
+	csvLevelMutex sync.RWMutex
+	csvWriteMutex sync.Mutex
+	csvWriter     StringWriter
 }
 func (d *DualLogger) SetConsoleLogLevel( level EventLevel) {
 	d.consoleLevelMutex.Lock()
@@ -29,15 +30,15 @@ func (d *DualLogger)  GetConsoleLogLevel() EventLevel {
 }
 
 func (d *DualLogger) SetCSVLogLevel (level EventLevel) {
-	d.cSVLevelMutex.Lock()
-	defer d.cSVLevelMutex.Unlock()
-	d.cSVLogLevel=level
+	d.csvLevelMutex.Lock()
+	defer d.csvLevelMutex.Unlock()
+	d.csvLogLevel =level
 }
 
 func (d *DualLogger) GetCSVLogLevel() EventLevel {
-	d.cSVLevelMutex.RLock()
-	defer d.cSVLevelMutex.RUnlock()
-	return d.cSVLogLevel
+	d.csvLevelMutex.RLock()
+	defer d.csvLevelMutex.RUnlock()
+	return d.csvLogLevel
 }
 
 func (d *DualLogger) Log(message LogMessage) {
