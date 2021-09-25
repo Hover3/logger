@@ -17,16 +17,19 @@ type CSVStringBuilder struct {
 	TimeFormatter
 }
 
-//func (C CSVStringBuilder) MessageToString(message LogMessage) (string, error) {
-//	var tmpStr string
-//
-//
-//}
+func (csb *CSVStringBuilder) MessageToString(message LogMessage) (string, error) {
+	tmpStr:= fmt.Sprint(GetEventLevelChar(message.EventLevel), csb.ColumnSeparator,
+			csb.TimeFormatter.FormatTime(message.Timestamp), csb.ColumnSeparator,
+			message.ServiceType, csb.ColumnSeparator,
+			message.EventType, csb.ColumnSeparator,
+			message.Number1, csb.ColumnSeparator,
+			message.Number2, csb.ColumnSeparator,
+			message.Number3, csb.ColumnSeparator,
+			message.AdditionalInfo, csb.ColumnSeparator,
+			message.TextMessage, csb.ColumnSeparator,
+			)
 
-func (C *CSVStringBuilder) MessageToString(message LogMessage) (string, error) {
-	var tmpStr string
-
-
+	return tmpStr, nil
 }
 
 func GetEventLevelChar (l EventLevel) string {
@@ -50,8 +53,6 @@ func GetEventLevelChar (l EventLevel) string {
 	}
 }
 
-
-
 type StdTimeFormatter struct {
 	format string
 }
@@ -69,6 +70,5 @@ func NewStdTimeFormatter(
 	}
 }
 func (stf *StdTimeFormatter) FormatTime(t time.Time) string {
-
 	return t.Format(stf.format)
 }
