@@ -7,7 +7,7 @@ type ServiceType int16
 type EventType int16
 const (
 	//TODO Consider about the way to inform about logging level changes
-	LOG_MODE EventLevel = -1
+	LOGGER_EVENT EventLevel = -1
 	//----------------
 	OFF EventLevel= 0
 )
