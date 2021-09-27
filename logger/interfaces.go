@@ -1,18 +1,22 @@
 package logger
 
-import "time"
+import (
+	_ "github.com/brianvoe/gofakeit/v6"
+	"time"
+)
 
 type EventLevel int16
 type ServiceType int16
 type EventType int16
+
 const (
 	//TODO Consider about the way to inform about logging level changes
 	LOGGER_EVENT EventLevel = -1
 	//----------------
-	OFF EventLevel= 0
+	OFF EventLevel = 0
 )
 const (
-	Event_FATAL EventLevel= (iota +1) *1000
+	Event_FATAL EventLevel = (iota + 1) * 1000
 	Event_ERROR
 	Event_WARNING
 	Event_INFO
@@ -21,28 +25,28 @@ const (
 )
 
 const (
-	ServiceUnspecified ServiceType =0
-	EventUnspecified EventType=0
+	ServiceUnspecified ServiceType = 0
+	EventUnspecified   EventType   = 0
 )
 
 const Service_Logger_itself = -1
 const (
-	Logger_Started EventType = iota+1
+	Logger_Started EventType = iota + 1
 	Logger_WriterLevelChanged
 	//...
 	Logger_Terminated EventType = 9999
 )
 
 type LogMessage struct {
-	EventLevel
-	ServiceType
-	EventType
-	Number1 int
-	Number2 int
-	Number3 int
-	AdditionalInfo string
-	TextMessage string
-	Timestamp time.Time
+	EventLevel     `fake:"{number:1,6}"`
+	ServiceType    `fake:"{uint8}"`
+	EventType      `fake:"{uint8}"`
+	Number1        int    `fake:"{uint8}"`
+	Number2        int    `fake:"{uint8}"`
+	Number3        int    `fake:"{uint8}"`
+	AdditionalInfo string `fake:"{sentence:3}"`
+	TextMessage    string `fake:"{sentence:3}"`
+	Timestamp      time.Time
 }
 
 type StructuralLogger interface {
@@ -68,7 +72,6 @@ type LegacyLogger interface {
 }
 
 type StringWriter interface {
-	
 	WriteLn(string) error
 }
 
@@ -83,4 +86,3 @@ type TimeProvider interface {
 type TimeFormatter interface {
 	FormatTime(t time.Time) string
 }
-
