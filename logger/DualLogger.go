@@ -92,8 +92,8 @@ func (d *DualLogger) writeToConsole(message *LogMessage) {
 	fmt.Println(msg)
 }
 func (d *DualLogger) writeToCSV(message *LogMessage) {
-	d.consoleWriteMutex.Lock()
-	defer d.consoleWriteMutex.Unlock()
+	d.csvWriteMutex.Lock()
+	defer d.csvWriteMutex.Unlock()
 	if d.csvStringBuilder == nil {
 		fmt.Println("Logger: CSV string builder is not set!")
 		return
