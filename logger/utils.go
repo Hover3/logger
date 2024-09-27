@@ -19,21 +19,21 @@ type CSVStringBuilder struct {
 }
 
 func (csb *CSVStringBuilder) MessageToString(message *LogMessage) (string, error) {
-	tmpStr:= fmt.Sprint(GetEventLevelChar(message.EventLevel), csb.ColumnSeparator,
-			csb.TimeFormatter.FormatTime(message.Timestamp), csb.ColumnSeparator,
-			message.ServiceType, csb.ColumnSeparator,
-			message.EventType, csb.ColumnSeparator,
-			message.Number1, csb.ColumnSeparator,
-			message.Number2, csb.ColumnSeparator,
-			message.Number3, csb.ColumnSeparator,
-			message.AdditionalInfo, csb.ColumnSeparator,
-			message.TextMessage, csb.ColumnSeparator,
-			)
+	tmpStr := fmt.Sprint(GetEventLevelChar(message.EventLevel), csb.ColumnSeparator,
+		message.ServiceType, csb.ColumnSeparator,
+		message.EventType, csb.ColumnSeparator,
+		message.Number1, csb.ColumnSeparator,
+		message.Number2, csb.ColumnSeparator,
+		message.Number3, csb.ColumnSeparator,
+		message.AdditionalInfo, csb.ColumnSeparator,
+		message.TextMessage, csb.ColumnSeparator,
+		csb.TimeFormatter.FormatTime(message.Timestamp),
+	)
 
 	return tmpStr, nil
 }
 
-func GetEventLevelChar (l EventLevel) string {
+func GetEventLevelChar(l EventLevel) string {
 	switch l {
 	case LOGGER_EVENT:
 		return "L"
@@ -76,6 +76,6 @@ func (stf *StdTimeFormatter) FormatTime(t time.Time) string {
 }
 
 func GetRuntimeInfo(skip int) (string, int) {
-	_, fn, line, _ := runtime.Caller(skip+1)
+	_, fn, line, _ := runtime.Caller(skip + 1)
 	return fn, line
 }
